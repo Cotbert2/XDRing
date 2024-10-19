@@ -1,0 +1,39 @@
+
+*{
+    font-family: 'Lato', sans-serif;
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+#play{
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-1800deg);
+    -ms-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+    background-color: rgb(61, 235, 61);
+    padding: 1rem;
+    border-radius: 1rem 0;
+    height: 100%;
+
+}
+.tit{
+    font-weight: 300;
+    text-align: center;
+    background-color: rgb(61, 235, 61);
+    color: black;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.lett{
+    font-size: 1rem;
+    text-align: center;
+}
+.cent{
+    display: inline-block;
+    justify-content: center;
+}
+.logo{
+    border-radius: 1rem;
+    margin: 1rem;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node telegramBot/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "chromium": "^3.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.17.3",
+    "morgan": "^1.10.0",
+    "onoff": "^6.0.3",
+    "open": "^8.4.0",
+    "pigpio-mock": "^0.0.1",
+    "puppeteer": "^13.5.2",
+    "socket.io": "^4.4.1",
+    "telegraf": "^4.7.0"
+  }
+}
