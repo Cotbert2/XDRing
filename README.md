@@ -13,6 +13,7 @@ As a graduate project in high school, we built XDRing: automation and operation 
 **Installation**
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/Cotbert2/XDRing
 cd XDRing

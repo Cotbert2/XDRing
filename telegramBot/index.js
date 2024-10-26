@@ -19,6 +19,7 @@ const bot = new Telegraf(process.env.TOKEN);
 const { messageToSend } = require('./constants');
 const { startRecording } = require ('./response')
 const {deleteFolderAudio} = require('./execute');
+const { checkFolder } = require('./tasks');
 
 //constants
 const chatId = process.env.CHAT_ID;
@@ -210,6 +211,7 @@ bot.on('text', (ctx) => {
 
 
 
+
 //deploy
 bot.launch().then( () => {
     console.log('Bot inicado');
@@ -266,17 +268,15 @@ const callOpenCv = (action, parameter) => {
                 console.log('Video Grabado con éxito');
                 led.writeSync(0);
             });
-        }else if(action == 6){
-            console.log('apagando xD Ring');
-        }else if (action == 7){
-            if(peopleToSend.length==0){
-                console.log('There is no users yet')
-            }else{
-            for(let i = 0; i < peopleToSend.length; i++){
-                bot.telegram.sendPhoto(peopleToSend[i],{source: './assets/image.jpg'}).then(() => {
-                    bot.telegram.sendMessage(peopleToSend[i],'Alguien ha tocado el timbre ');
-                })
-            }
+        }else if(action == 6) console.log('apagando xD Ring');
+        else if (action == 7){
+            if(peopleToSend.length==0)console.log('There is no users yet')
+            else{
+                for(let i = 0; i < peopleToSend.length; i++){
+                    bot.telegram.sendPhoto(peopleToSend[i],{source: './assets/image.jpg'}).then(() => {
+                        bot.telegram.sendMessage(peopleToSend[i],'Alguien ha tocado el timbre ');
+                    })
+                }
         }
         }else if(action == 8){
             parameter.reply('El video de muestra se terminó de grabar con éxito').then(() =>{
@@ -292,10 +292,8 @@ const callOpenCv = (action, parameter) => {
                             clearInterval(checkFolder)
                             console.log(files.length);
                         }
-                    })
-                }
-            , 1000);
-            
+                    });
+                }, 1000);
         }
     });
 
@@ -308,15 +306,3 @@ const createVideo = async () => {
     });
 }
 
-
-let checkFolder = setInterval(
-    () => {
-        fs.readdir('./telegramBot/audio', (err, files) => {
-            if(files.length > 0){
-                callOpenCv(10, './telegramBot/audio/' + files[0]);
-                clearInterval(checkFolder)
-                console.log(files.length);
-            }
-        })
-    }
-, 1000);
