@@ -16,9 +16,10 @@ dotenv.config();
 
 //bot initialization
 const bot = new Telegraf(process.env.TOKEN);
+const { messageToSend } = require('./constants');
+const {deleteFolderAudio} = require('./execute');
 
 //constants
-const { messageToSend } = require('./constants');
 const chatId = process.env.CHAT_ID;
 
 let button = new Gpio(17, 'in')
@@ -32,67 +33,9 @@ let peopleToSend = [];
 
 
 //methods
-const shutdownServer = (contextXd) => {
-    serverisWorking = false;
-    const tasks = exec('pgrep chromium-browser | cat > clientTask.txt && head -n 1 clientTask.txt' );
-
-        tasks.stdout.on('data', (data) => {
-            console.log(data);
-
-            const killClient = exec(`kill ${data}`);
-
-            killClient.stdout.on('data', (data) => {
-                console.log(data);
-            });
-            killClient.stdout.on('error', (err) => {
-                console.error(err)
-            }) 
-            killClient.on('exit', (code) => {
-                console.log(`exit with code : ${code}`);
-            });
-        });
-        tasks.stdout.on('error', (err) => {
-            console.error(err)
-        }) 
-        tasks.on('exit', (code) => {
-            console.log(`exit with code : ${code}`);
-
-        });
-        http.close();
-        contextXd.reply('La transmisión en vivo se apagó correctamente');
-}
 
 
-const deleteFonderAudio = () => {
-    fs.readdir('./telegramBot/audio', (err, files) => {
-        let filesToDelete = 'sudo rm ';
-        console.log(files);
-        if(err){
-            console.error(err);
-            return;
-        }
-        if(files.length > 0){
-            for(let i = 0; i < files.length; i++){
-                filesToDelete += './telegramBot/audio/' + files[i] + ' ';
-            }
-            console.log(filesToDelete)
-            const deleteFiles = exec(filesToDelete);
-
-            //FUNCTION
-            deleteFiles.stdout.on('data', (data) => {
-                console.log(data);
-            });
-            deleteFiles.stdout.on('error', (err) => {
-                console.error(err)
-            });
-            deleteFiles.on('exit', (code) => {
-                console.log(`exit with code : ${code}`);
-            });
-        }
-    });
-}
-
-deleteFonderAudio();
+deleteFolderAudio();
 
 bot.start((ctx) => {
     ctx.reply('xD Ring y xD Bot están activos');
@@ -102,9 +45,7 @@ bot.start((ctx) => {
 
 //commands
 
-bot.command('estado', (ctx) => {
-    ctx.reply('funcionando');
-});
+bot.command('estado', (ctx) => ctx.reply('funcionando'));
 
 bot.command('apagar', (ctx) => {
     ctx.reply(`Apagando xd Ring, hasta la próximaaaa 😎,
@@ -113,10 +54,8 @@ bot.command('apagar', (ctx) => {
 });
 
 
-bot.command('ip',(ctx)=> {
-    //response with the default ethernet connectino
-    ctx.reply(`Ethernet Ip: ${os.networkInterfaces().eth0[0].address}`);
-});
+//response with the default ethernet connectino
+bot.command('ip',(ctx)=> ctx.reply(`Ethernet Ip: ${os.networkInterfaces().eth0[0].address}`));
 
 //reponse
 bot.hears('hola', (ctx) => {
@@ -126,14 +65,14 @@ bot.hears('hola', (ctx) => {
 
 //Hears
 bot.hears(['1','foto'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
         ctx.reply('Enviando Foto...').then( () => {
         callOpenCv(1,ctx);
     });
 });
 
 bot.hears(['2','personas'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
 
     fs.readdir('./Recognition/Data', (err, files) => {
         if(err){
@@ -149,12 +88,12 @@ bot.hears(['2','personas'], (ctx) => {
 
 });
 bot.hears(['3','audio'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
     ctx.replyWithAudio({source: './assets/audioDePrueba.ogg'});
 });
 
 bot.hears(['4','video'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
 
     ctx.reply('Espera un momento mientras grabamos el video :) ......').then(
     callOpenCv(4,ctx)).then(() => {
@@ -165,14 +104,14 @@ bot.hears(['4','video'], (ctx) => {
 });
 
 bot.hears(['5','reconocimiento'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
 
     ctx.reply('Espera un momento mientras grabamos el video con reconocimiento facial :) ......')
     .then(callOpenCv(5,ctx));
 });
 
 bot.hears(['6','apagar'], (ctx) => {
-    if(serverisWorking) shutdownServer(ctx);
+    if(serverisWorking) shutdownServer(ctx, http);
     ctx.reply('¿Estás seguro que deseas apagar xD Ring?').then( () => confirm = true);
 });
 
@@ -202,7 +141,7 @@ bot.hears(['7','server'],  (ctx) => {
         //send the default ethernet connection
         //TODO:ctx.reply(`http://${os.networkInterfaces().eth0[0].address}:3000/visualizar.html`);
     }else {
-        shutdownServer(ctx);
+        shutdownServer(ctx, http);
         ctx.reply('La transmisión en vivo se pausó con éxito :)');
     }
 });
@@ -349,7 +288,7 @@ const callOpenCv = (action, parameter) => {
                 parameter.reply('Ingresa el nombre de la persona:');
             })
         }else if(action == 10){
-            deleteFonderAudio();
+            deleteFolderAudio();
             let checkFolder = setInterval(
                 () => {
                     fs.readdir('./telegramBot/audio', (err, files) => {
