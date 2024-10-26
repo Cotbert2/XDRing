@@ -17,6 +17,7 @@ dotenv.config();
 //bot initialization
 const bot = new Telegraf(process.env.TOKEN);
 const { messageToSend } = require('./constants');
+const { startRecording } = require ('./response')
 const {deleteFolderAudio} = require('./execute');
 
 //constants
@@ -166,13 +167,7 @@ bot.hears('9', (ctx)=> {
 });
 
 bot.hears('ok' , async (ctx) =>{
-    if(isOk){
-        ctx.reply('Empezamos a grabar la muestra en...');
-        await ctx.reply('3');
-        await ctx.reply('2');
-        await ctx.reply('1');
-        await ctx.reply('Estamos grabando...').then(callOpenCv(8,ctx));
-    }
+
 });
 
 //Events
