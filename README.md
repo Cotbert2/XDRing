@@ -5,7 +5,8 @@ As a graduate project in high school, we built XDRing: automation and operation 
 
 **Requirements**
 
-- Chrome Browser
+- Chromium Web Browser
+- Omxplayer
 - NodeJS
 - Python3
 
@@ -18,6 +19,7 @@ cd XDRing
 ```
 
 2. Install the dependencies
+
 ```bash
 npm install
 python3 -m venv venv
@@ -78,6 +80,10 @@ Below you can see the main operations of the bot:
 ![Telegram Bot Option 8](./guide/option8.jpeg)
 ![Telegram Bot Option 9](./guide/option9.jpeg)
 
+
+Watch about the stream view page
+![Streaming](./guide/livestream.png)
+
 2. **Protocols Involved**:
 
 Protocol | Description
@@ -109,4 +115,3 @@ When we are 16 years old, we built XDRing as a graduation project (our high scho
 ### Wanna to contribute?
 
 We are open to contributions, feel free to fork this project and make a pull request. We are open to suggestions and improvements.
-
